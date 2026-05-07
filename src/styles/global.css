@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+/*
+ * Tailwind only ships utility classes it sees as literal strings.
+ * Section components build classes dynamically (e.g. `bg-${tone}`),
+ * so we safelist the values declared in backend's config/theme.php.
+ */
+@source inline("{bg-,text-,border-}{primary,accent,offWhite,black,white,good,warn,bad}");
+@source inline("{pt-,pb-}{0,8,16,24}");
+@source inline("text-{left,center,right}");
+@source inline("text-sm text-lg");
+@source inline("container-small container-large");
+
+@theme {
+  --color-primary: #ff5a1f;
+  --color-accent: #6c5ce7;
+  --color-offWhite: #f5f5f7;
+  --color-ink: #0b0b10;
+  --color-grey: #9aa0a6;
+  --color-good: #34d399;
+  --color-warn: #fbbf24;
+  --color-bad: #ef4444;
+}
+
+html {
+  background-color: var(--color-ink);
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.container {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  max-width: 1200px;
+}
+
+.container-small {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  max-width: 800px;
+}
+
+.container-large {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  max-width: 1440px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.1rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.btn--primary {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+.btn--primary:hover {
+  background-color: #ff7846;
+}
+
+.btn--secondary {
+  background-color: var(--color-accent);
+  color: #fff;
+}
+
+.btn--secondary:hover {
+  filter: brightness(1.1);
+}
+
+.btn--ghost {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.btn--ghost:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.content :where(h1, h2, h3, h4) {
+  font-weight: 700;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+.content :where(h1) { font-size: 2.5rem; }
+.content :where(h2) { font-size: 2rem; }
+.content :where(h3) { font-size: 1.5rem; }
+.content :where(p) { margin-block: 0.75em; line-height: 1.7; }
+.content :where(a) { color: var(--color-primary); text-decoration: underline; }
+.content :where(ul, ol) { padding-left: 1.5rem; margin-block: 0.75em; }
+.content :where(ul) { list-style: disc; }
+.content :where(ol) { list-style: decimal; }
+.content :where(strong) { color: #fff; }

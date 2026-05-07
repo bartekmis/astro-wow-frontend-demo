@@ -1,0 +1,26 @@
+---
+import type { ResolvedButton } from "../../lib/types";
+import { rewriteWpUrl } from "../../lib/wp";
+
+interface Props {
+  buttons?: ResolvedButton[];
+  class?: string;
+}
+
+const { buttons = [], class: className = "btn-wrapper mt-8 flex flex-wrap items-center gap-4" } = Astro.props;
+---
+
+{buttons.length > 0 && (
+  <div class={className}>
+    {buttons.map((b) => (
+      <a
+        href={rewriteWpUrl(b.url ?? "/")}
+        target={b.target ?? undefined}
+        rel={b.target === "_blank" ? "noopener noreferrer" : undefined}
+        class={b.style_class ?? "btn btn--primary"}
+      >
+        {b.title ?? ""}
+      </a>
+    ))}
+  </div>
+)}

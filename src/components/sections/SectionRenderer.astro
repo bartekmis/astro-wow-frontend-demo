@@ -1,0 +1,49 @@
+---
+import type { Section } from "../../lib/types";
+import HeaderHero from "./HeaderHero.astro";
+import Section100 from "./Section100.astro";
+import Section5050 from "./Section5050.astro";
+import Section333333 from "./Section333333.astro";
+import SectionLogos from "./SectionLogos.astro";
+import SectionMarquee from "./SectionMarquee.astro";
+import SectionQuote from "./SectionQuote.astro";
+import SectionNewsletter from "./SectionNewsletter.astro";
+import SectionServices from "./SectionServices.astro";
+import SectionAbout from "./SectionAbout.astro";
+import SectionCourses from "./SectionCourses.astro";
+import SectionBlog from "./SectionBlog.astro";
+import SectionChart from "./SectionChart.astro";
+
+interface Props {
+  sections?: Section[];
+  header?: Section | null;
+}
+
+const { sections = [], header = null } = Astro.props;
+---
+
+{header?.type === "header-hero" && <HeaderHero section={header} />}
+
+{sections.map((section) => {
+  switch (section.type) {
+    case "section-100":      return <Section100 section={section} />;
+    case "section-50-50":    return <Section5050 section={section} />;
+    case "section-33-33-33": return <Section333333 section={section} />;
+    case "section-logos":    return <SectionLogos section={section} />;
+    case "section-marquee":  return <SectionMarquee section={section} />;
+    case "section-quote":    return <SectionQuote section={section} />;
+    case "section-newsletter": return <SectionNewsletter section={section} />;
+    case "section-services": return <SectionServices section={section} />;
+    case "section-about":    return <SectionAbout section={section} />;
+    case "section-courses":  return <SectionCourses section={section} />;
+    case "section-blog":     return <SectionBlog section={section} />;
+    case "section-chart":    return <SectionChart section={section} />;
+    default:
+      return (
+        <section class="container py-12 border-y border-white/10 my-4">
+          <p class="text-grey text-xs uppercase tracking-widest mb-2">Unmapped section: {section.type}</p>
+          <pre class="text-xs overflow-auto bg-white/5 p-4 rounded">{JSON.stringify(section.data, null, 2)}</pre>
+        </section>
+      );
+  }
+})}

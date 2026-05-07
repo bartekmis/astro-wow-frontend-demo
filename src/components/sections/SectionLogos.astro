@@ -1,0 +1,22 @@
+---
+import type { Section } from "../../lib/types";
+import { sectionWrapperClasses, containerClass, anchorId } from "../../lib/section-helpers";
+
+interface Props { section: Section; }
+const { section } = Astro.props;
+const data = section.data;
+const items = (data.logos as Array<{ name?: string }> | undefined) ?? [];
+---
+
+<section id={anchorId(data)} class={sectionWrapperClasses(data)}>
+  <div class={containerClass(data)}>
+    {data.eyebrow && (
+      <p class="text-center text-sm uppercase tracking-[0.18em] text-grey mb-8">{data.eyebrow}</p>
+    )}
+    <div class="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 text-grey">
+      {items.map((logo) => (
+        <span class="text-lg font-semibold opacity-70 hover:opacity-100 transition">{logo.name ?? ""}</span>
+      ))}
+    </div>
+  </div>
+</section>

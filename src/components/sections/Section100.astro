@@ -1,0 +1,42 @@
+---
+import type { Section, ResolvedButton } from "../../lib/types";
+import {
+  sectionWrapperClasses,
+  containerClass,
+  fontSizeClass,
+  headlineClass,
+  textColour,
+  anchorId,
+} from "../../lib/section-helpers";
+import Buttons from "./Buttons.astro";
+
+interface Props { section: Section; }
+const { section } = Astro.props;
+const data = section.data;
+const text = (data.text as string) || "";
+const btns = (data.btns as ResolvedButton[] | undefined) ?? [];
+---
+
+<section id={anchorId(data)} class={sectionWrapperClasses(data)}>
+  <div class={containerClass(data)}>
+    <div class="grid text-center">
+      {data.pre_headline && (
+        <p class={`mb-3 text-lg font-medium ${textColour(data, "pre_headline_colour")}`}>
+          {data.pre_headline}
+        </p>
+      )}
+
+      {data.headline && (
+        <h2 class={`${headlineClass(data, "headline_size")} ${textColour(data, "headline_colour")}`}>
+          {data.headline}
+        </h2>
+      )}
+
+      {text && (
+        <div class={`content ${fontSizeClass(data)} mt-6`} set:html={text} />
+      )}
+
+      <Buttons buttons={btns} class="btn-wrapper mt-12 flex justify-center gap-4" />
+    </div>
+  </div>
+</section>

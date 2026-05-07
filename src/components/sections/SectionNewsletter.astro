@@ -1,0 +1,36 @@
+---
+import type { Section } from "../../lib/types";
+import { sectionWrapperClasses, containerClass, anchorId } from "../../lib/section-helpers";
+
+interface Props { section: Section; }
+const { section } = Astro.props;
+const data = section.data;
+const headline = (data.headline as string) || "";
+---
+
+<section id={anchorId(data) ?? "newsletter"} class={sectionWrapperClasses(data)}>
+  <div class={`${containerClass(data)} max-w-2xl text-center`}>
+    {data.eyebrow && (
+      <p class="text-sm uppercase tracking-[0.18em] text-grey mb-4">{data.eyebrow}</p>
+    )}
+    {headline && <div class="text-3xl md:text-4xl font-bold mb-4" set:html={headline} />}
+    {data.lead && <p class="text-grey mb-8 leading-relaxed">{data.lead}</p>}
+
+    <form action={data.form_action as string | undefined} method="post" class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
+      <input
+        type="email"
+        name="email"
+        placeholder={(data.placeholder as string | undefined) ?? "your@email.com"}
+        required
+        class="flex-1 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm focus:outline-none focus:border-white/30"
+      />
+      <button type="submit" class="btn btn--primary justify-center">
+        {(data.button_label as string | undefined) ?? "Subscribe"}
+      </button>
+    </form>
+
+    {data.disclaimer && (
+      <p class="text-grey text-xs mt-4">{data.disclaimer}</p>
+    )}
+  </div>
+</section>

@@ -1,0 +1,47 @@
+---
+import type { MenuItem } from "../lib/types";
+import { rewriteWpUrl } from "../lib/wp";
+
+interface Props {
+  siteTitle: string;
+  items: MenuItem[];
+}
+
+const { siteTitle, items } = Astro.props;
+const topLevel = items.filter((i) => !i.parentId);
+---
+
+<header class="fixed top-0 inset-x-0 z-50 transition-colors duration-300" data-site-header>
+  <div class="container flex items-center justify-between py-5">
+    <a href="/" class="flex items-center gap-2 group">
+      <span
+        class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-primary text-white font-bold text-sm transition-transform group-hover:rotate-[-6deg]"
+      >W</span>
+      <span class="font-semibold tracking-tight">{siteTitle}</span>
+    </a>
+
+    <nav
+      class="hidden lg:flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-2 py-1 backdrop-blur-md"
+      aria-label="Primary"
+    >
+      <ul class="flex items-center gap-1 list-none m-0 p-0">
+        {topLevel.map((item) => (
+          <li>
+            <a
+              href={rewriteWpUrl(item.url)}
+              target={item.target ?? undefined}
+              class="px-4 py-2 text-sm text-white/80 hover:text-white transition"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a href="#newsletter" class="hidden md:inline-flex btn btn--ghost">Newsletter</a>
+      <a href="#cta" class="btn btn--primary">Audyt strony</a>
+    </div>
+  </div>
+</header>

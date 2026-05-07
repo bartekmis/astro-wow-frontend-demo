@@ -1,0 +1,15 @@
+---
+import Base from "../layouts/Base.astro";
+import PageContent from "../components/PageContent.astro";
+import { loadPage } from "../lib/page-loader";
+
+const page = await loadPage("/");
+
+if (!page || page.__typename !== "Page") {
+  throw new Error("Front page not found in WordPress (set Settings -> Reading -> Static page).");
+}
+---
+
+<Base title={page.title}>
+  <PageContent page={page} />
+</Base>

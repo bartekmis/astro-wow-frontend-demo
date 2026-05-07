@@ -1,0 +1,36 @@
+---
+import type { Section } from "../../lib/types";
+import { sectionWrapperClasses, containerClass, anchorId } from "../../lib/section-helpers";
+
+interface Props { section: Section; }
+const { section } = Astro.props;
+const data = section.data;
+const headline = (data.headline as string) || "";
+---
+
+<section id={anchorId(data)} class={sectionWrapperClasses(data)}>
+  <div class={containerClass(data)}>
+    <div class="flex items-end justify-between flex-wrap gap-4 mb-10">
+      <div>
+        {data.eyebrow && (
+          <p class="text-sm uppercase tracking-[0.18em] text-grey mb-3">{data.eyebrow}</p>
+        )}
+        {headline && <div class="text-3xl md:text-4xl font-bold" set:html={headline} />}
+      </div>
+      {data.all_posts_url && (
+        <a href={data.all_posts_url as string} class="btn btn--ghost">
+          {data.all_posts_label ?? "All posts"}
+        </a>
+      )}
+    </div>
+
+    <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-grey text-sm">
+      <p class="font-semibold text-white mb-1">Blog feed placeholder.</p>
+      <p>
+        This section needs a separate WPGraphQL query for posts (auto mode) or
+        association resolution for manual mode. Wire it up in
+        <code>SectionBlog.astro</code> when the editorial flow needs it.
+      </p>
+    </div>
+  </div>
+</section>

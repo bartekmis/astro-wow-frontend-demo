@@ -1,0 +1,47 @@
+---
+import type { Section } from "../../lib/types";
+import { sectionWrapperClasses, containerClass, anchorId } from "../../lib/section-helpers";
+
+interface Props { section: Section; }
+const { section } = Astro.props;
+const data = section.data;
+const headline = (data.headline as string) || "";
+const cards = (data.cards as Array<{
+  tone?: string;
+  title?: string;
+  description?: string;
+  bullets?: Array<{ text?: string }>;
+}> | undefined) ?? [];
+---
+
+<section id={anchorId(data)} class={sectionWrapperClasses(data)}>
+  <div class={containerClass(data)}>
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      {data.eyebrow && (
+        <p class="text-sm uppercase tracking-[0.18em] text-grey mb-3">{data.eyebrow}</p>
+      )}
+      {headline && <div class="text-3xl md:text-4xl font-bold" set:html={headline} />}
+      {data.lead && <p class="mt-4 text-grey leading-relaxed">{data.lead}</p>}
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-3">
+      {cards.map((card) => (
+        <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+          <span class={`inline-block w-10 h-10 rounded-lg bg-${card.tone ?? "primary"}/20 mb-4`} />
+          {card.title && <h3 class="text-xl font-semibold mb-2">{card.title}</h3>}
+          {card.description && <p class="text-grey text-sm leading-relaxed mb-4">{card.description}</p>}
+          {card.bullets && card.bullets.length > 0 && (
+            <ul class="space-y-2 text-sm">
+              {card.bullets.map((b) => (
+                <li class="flex items-start gap-2">
+                  <span class={`w-1.5 h-1.5 rounded-full mt-2 bg-${card.tone ?? "primary"}`} />
+                  <span class="text-white/80">{b.text ?? ""}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

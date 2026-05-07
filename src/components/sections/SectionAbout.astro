@@ -1,0 +1,51 @@
+---
+import type { Section } from "../../lib/types";
+import { sectionWrapperClasses, containerClass, anchorId } from "../../lib/section-helpers";
+
+interface Props { section: Section; }
+const { section } = Astro.props;
+const data = section.data;
+const headline = (data.headline as string) || "";
+const body = (data.body as string) || "";
+const metrics = (data.metrics as Array<{ label?: string; amount?: string }> | undefined) ?? [];
+---
+
+<section id={anchorId(data)} class={sectionWrapperClasses(data)}>
+  <div class={containerClass(data)}>
+    <div class="grid gap-12 lg:grid-cols-12 items-center">
+      <div class="lg:col-span-7">
+        {data.eyebrow && (
+          <p class="text-sm uppercase tracking-[0.18em] text-grey mb-3">{data.eyebrow}</p>
+        )}
+        {headline && <div class="text-3xl md:text-4xl font-bold mb-6" set:html={headline} />}
+        {body && <div class="prose prose-invert content" set:html={body} />}
+
+        {metrics.length > 0 && (
+          <div class="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-xl">
+            {metrics.map((m) => (
+              <div>
+                <div class="font-mono text-2xl text-white tabular-nums">{m.amount ?? ""}</div>
+                <div class="text-xs uppercase tracking-[0.18em] text-grey mt-1">{m.label ?? ""}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div class="lg:col-span-5">
+        <div class="rounded-3xl border border-white/10 bg-white/[0.04] p-8 text-center">
+          <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-primary/20 text-primary text-4xl font-bold mb-6">
+            {data.visual_initials ?? ""}
+          </div>
+          {data.visual_name && <p class="text-xl font-semibold">{data.visual_name}</p>}
+          {data.visual_role && <p class="text-grey text-sm">{data.visual_role}</p>}
+          {data.visual_chip && (
+            <span class="inline-flex mt-6 px-3 py-1 rounded-full border border-white/10 text-xs text-grey">
+              {data.visual_chip}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

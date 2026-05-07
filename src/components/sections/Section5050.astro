@@ -1,0 +1,19 @@
+---
+import type { Section } from "../../lib/types";
+import { sectionWrapperClasses, containerClass, fontSizeClass, anchorId } from "../../lib/section-helpers";
+
+interface Props { section: Section; }
+const { section } = Astro.props;
+const data = section.data;
+const col1 = (data.column1_text as string) || "";
+const col2 = (data.column2_text as string) || "";
+---
+
+<section id={anchorId(data)} class={sectionWrapperClasses(data)}>
+  <div class={containerClass(data)}>
+    <div class={`grid md:grid-cols-2 gap-12 content ${fontSizeClass(data)}`}>
+      <div set:html={col1} />
+      <div set:html={col2} />
+    </div>
+  </div>
+</section>

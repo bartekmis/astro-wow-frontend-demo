@@ -1,0 +1,25 @@
+---
+import type { Section } from "../../lib/types";
+import { anchorId } from "../../lib/section-helpers";
+
+interface Props { section: Section; }
+const { section } = Astro.props;
+const data = section.data;
+const items = (data.items as Array<{ label?: string }> | undefined) ?? [];
+const labels = items.map((i) => i.label ?? "").filter(Boolean);
+---
+
+<section id={anchorId(data)} class="overflow-hidden border-y border-white/10 py-6 bg-white/[0.02]">
+  <div class="flex gap-12 whitespace-nowrap animate-[marquee_30s_linear_infinite]">
+    {[...labels, ...labels].map((label) => (
+      <span class="text-grey uppercase tracking-[0.18em] text-sm">{label}</span>
+    ))}
+  </div>
+</section>
+
+<style>
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+</style>

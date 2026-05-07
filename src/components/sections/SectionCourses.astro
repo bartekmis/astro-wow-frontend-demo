@@ -1,0 +1,67 @@
+---
+import type { Section, ResolvedButton } from "../../lib/types";
+import { sectionWrapperClasses, containerClass, anchorId } from "../../lib/section-helpers";
+import Buttons from "./Buttons.astro";
+
+interface Props { section: Section; }
+const { section } = Astro.props;
+const data = section.data;
+const headline = (data.headline as string) || "";
+const courses = (data.courses as Array<{
+  tone?: string;
+  tags?: Array<{ label?: string }>;
+  title?: string;
+  description?: string;
+  metrics?: Array<{ amount?: string; label?: string }>;
+  course_btns?: ResolvedButton[];
+}> | undefined) ?? [];
+---
+
+<section id={anchorId(data)} class={sectionWrapperClasses(data)}>
+  <div class={containerClass(data)}>
+    <div class="flex items-end justify-between flex-wrap gap-4 mb-10">
+      <div>
+        {data.eyebrow && (
+          <p class="text-sm uppercase tracking-[0.18em] text-grey mb-3">{data.eyebrow}</p>
+        )}
+        {headline && <div class="text-3xl md:text-4xl font-bold" set:html={headline} />}
+      </div>
+      {data.all_courses_url && (
+        <a href={data.all_courses_url as string} class="btn btn--ghost">
+          {data.all_courses_label ?? "All courses"}
+        </a>
+      )}
+    </div>
+
+    <div class="grid gap-6 lg:grid-cols-2">
+      {courses.map((course) => (
+        <article class={`rounded-3xl border border-white/10 bg-gradient-to-br from-${course.tone ?? "primary"}/10 to-transparent p-8`}>
+          {course.tags && course.tags.length > 0 && (
+            <div class="flex flex-wrap gap-2 mb-4">
+              {course.tags.map((t) => (
+                <span class="px-3 py-1 text-xs rounded-full border border-white/10 text-grey">{t.label ?? ""}</span>
+              ))}
+            </div>
+          )}
+          {course.title && (
+            <h3 class="text-2xl font-bold mb-3" set:html={course.title} />
+          )}
+          {course.description && (
+            <p class="text-grey leading-relaxed mb-6">{course.description}</p>
+          )}
+          {course.metrics && course.metrics.length > 0 && (
+            <div class="grid grid-cols-3 gap-4 mb-6">
+              {course.metrics.map((m) => (
+                <div>
+                  <div class="font-mono text-lg text-white">{m.amount ?? ""}</div>
+                  <div class="text-xs text-grey">{m.label ?? ""}</div>
+                </div>
+              ))}
+            </div>
+          )}
+          <Buttons buttons={course.course_btns ?? []} class="flex flex-wrap gap-3" />
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

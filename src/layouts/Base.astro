@@ -1,0 +1,39 @@
+---
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { wpQuery } from "../lib/wp";
+import { GET_LAYOUT } from "../lib/queries";
+import type { LayoutData } from "../lib/types";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+
+const layout = await wpQuery<LayoutData>(GET_LAYOUT);
+const siteTitle = layout.generalSettings.title;
+const primaryItems = layout.primary.nodes[0]?.menuItems.nodes ?? [];
+const productsItems = layout.footerProducts.nodes[0]?.menuItems.nodes ?? [];
+const companyItems = layout.footerCompany.nodes[0]?.menuItems.nodes ?? [];
+const metaDescription = description ?? layout.generalSettings.description;
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} - {siteTitle}</title>
+    {metaDescription && <meta name="description" content={metaDescription} />}
+  </head>
+  <body class="bg-ink text-white">
+    <Header siteTitle={siteTitle} items={primaryItems} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer siteTitle={siteTitle} products={productsItems} company={companyItems} />
+  </body>
+</html>

@@ -1,0 +1,38 @@
+---
+import SectionRenderer from "./sections/SectionRenderer.astro";
+import type { WpPage, Section } from "../lib/types";
+
+interface Props {
+  page: WpPage;
+}
+
+const { page } = Astro.props;
+
+function safeParse<T>(json: string | null): T | null {
+  if (!json) return null;
+  try {
+    return JSON.parse(json) as T;
+  } catch {
+    return null;
+  }
+}
+
+const sections = safeParse<Section[]>(page.sectionsJson) ?? [];
+const header = safeParse<Section>(page.headerJson);
+const hasContent = sections.length > 0 || header;
+---
+
+<article>
+  {!hasContent && (
+    <header class="container pt-32 pb-12">
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight">{page.title}</h1>
+      <p class="mt-4 text-grey text-sm">
+        This page has no Carbon Fields header or sections. Add some in
+        wp-admin -> Pages -> {page.title}, or check that the
+        <code>wpgraphql-carbon-fields</code> mu-plugin is active on the WP host.
+      </p>
+    </header>
+  )}
+
+  <SectionRenderer header={header} sections={sections} />
+</article>

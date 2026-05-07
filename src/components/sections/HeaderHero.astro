@@ -1,0 +1,110 @@
+---
+import type { Section, ResolvedButton } from "../../lib/types";
+import { anchorId } from "../../lib/section-helpers";
+import Buttons from "./Buttons.astro";
+
+interface Props { section: Section; }
+const { section } = Astro.props;
+const data = section.data;
+const headline = (data.headline as string) || "";
+const stats = (data.stats as Array<{ number?: string; suffix?: string; label?: string }> | undefined) ?? [];
+const vitals = (data.visual_vitals as Array<{ label?: string; amount?: string }> | undefined) ?? [];
+const bars = (data.visual_bars as Array<{ label?: string; amount?: string }> | undefined) ?? [];
+const btns = (data.btns as ResolvedButton[] | undefined) ?? [];
+---
+
+<section
+  id={anchorId(data)}
+  class="relative overflow-hidden pt-32 pb-24 flex items-center min-h-[80vh]"
+>
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,90,31,0.18),transparent_55%)] pointer-events-none"></div>
+
+  <div class="container relative z-10">
+    <div class="grid gap-16 lg:grid-cols-12 items-center">
+      <div class="lg:col-span-7">
+        {data.chip_text && (
+          <div class="inline-flex items-center gap-2 px-3 py-1 mb-8 rounded-full border border-white/10 bg-white/[0.04] text-xs">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+            <span>{data.chip_text}</span>
+          </div>
+        )}
+
+        {headline && (
+          <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-[1.05]" set:html={headline} />
+        )}
+
+        {data.subheadline && (
+          <p class="text-lg md:text-xl text-grey max-w-xl mb-10 leading-relaxed">{data.subheadline}</p>
+        )}
+
+        <Buttons buttons={btns} class="flex flex-wrap items-center gap-4" />
+
+        {stats.length > 0 && (
+          <div class="mt-14 grid grid-cols-3 gap-6 max-w-md">
+            {stats.map((stat) => (
+              <div>
+                <div class="font-mono text-3xl text-white tabular-nums">
+                  {stat.number ?? ""}{stat.suffix ?? ""}
+                </div>
+                <div class="text-xs uppercase tracking-[0.18em] text-grey mt-1">{stat.label ?? ""}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div class="lg:col-span-5 relative">
+        <div class="relative rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-transparent p-6 backdrop-blur-md">
+          <div class="flex items-center justify-between mb-6">
+            <div class="flex gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-red-400/70"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-400/70"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-green-400/70"></span>
+            </div>
+            <span class="text-[11px] font-mono text-grey">PageSpeed Insights</span>
+          </div>
+
+          <div class="flex items-center gap-6 mb-8">
+            <div class="w-20 h-20 rounded-full grid place-items-center border-4 border-green-400/30 text-3xl font-bold">
+              {data.visual_score ?? "0"}
+            </div>
+            <div>
+              <div class="text-grey text-xs uppercase tracking-[0.18em] mb-1">Performance</div>
+              <div class="text-2xl font-bold">{data.visual_score_label ?? ""}</div>
+              {data.visual_score_delta && (
+                <div class="text-xs text-green-400 mt-1 font-mono">{data.visual_score_delta}</div>
+              )}
+            </div>
+          </div>
+
+          {vitals.length > 0 && (
+            <div class="grid grid-cols-3 gap-3 mb-6">
+              {vitals.map((v) => (
+                <div class="rounded-xl border border-white/10 p-3 text-center">
+                  <div class="text-[10px] uppercase tracking-[0.18em] text-grey">{v.label ?? ""}</div>
+                  <div class="text-sm font-mono mt-1">{v.amount ?? ""}</div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {bars.length > 0 && (
+            <div class="space-y-3">
+              {bars.map((bar) => (
+                <div>
+                  <div class="flex justify-between text-xs text-grey mb-1.5">
+                    <span>{bar.label ?? ""}</span>
+                    <span class="font-mono text-white/80">{bar.amount ?? ""}</span>
+                  </div>
+                  <div class="h-1.5 rounded-full bg-white/10 overflow-hidden">
+                    <div class="h-full bg-green-400 rounded-full" style="width:80%"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

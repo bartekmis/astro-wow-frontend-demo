@@ -1,0 +1,32 @@
+---
+import Base from "../layouts/Base.astro";
+import PageContent from "../components/PageContent.astro";
+import { wpQuery } from "../lib/wp";
+import { GET_PAGE_SLUGS } from "../lib/queries";
+import { loadPage } from "../lib/page-loader";
+
+export async function getStaticPaths() {
+  const data = await wpQuery<{ pages: { nodes: { uri: string; isFrontPage: boolean }[] } }>(GET_PAGE_SLUGS);
+
+  return data.pages.nodes
+    .filter((p) => !p.isFrontPage && p.uri && p.uri !== "/")
+    .map((p) => {
+      const slug = p.uri.replace(/^\/+|\/+$/g, "");
+      return {
+        params: { slug },
+        props: { uri: p.uri },
+      };
+    });
+}
+
+const { uri } = Astro.props as { uri: string };
+const page = await loadPage(uri);
+
+if (!page || page.__typename !== "Page") {
+  return Astro.redirect("/404");
+}
+---
+
+<Base title={page.title}>
+  <PageContent page={page} />
+</Base>
