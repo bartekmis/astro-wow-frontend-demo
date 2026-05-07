@@ -3,6 +3,11 @@ import Base from "../layouts/Base.astro";
 import PageContent from "../components/PageContent.astro";
 import { loadPage } from "../lib/page-loader";
 
+Astro.response.headers.set(
+  "Netlify-CDN-Cache-Control",
+  "public, s-maxage=60, stale-while-revalidate=86400"
+);
+
 const page = await loadPage("/");
 
 if (!page || page.__typename !== "Page") {
